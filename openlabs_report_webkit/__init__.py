@@ -45,6 +45,9 @@ class ReportWebkit(Report):
         Translation = pool.get('ir.translation')
         Company = pool.get('company.company')
 
+        # Make the report itself available on the context
+        localcontext['report'] = report
+
         localcontext['data'] = data
         localcontext['user'] = User(Transaction().user)
         localcontext['formatLang'] = lambda *args, **kargs: \
