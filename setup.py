@@ -135,10 +135,10 @@ setup(
         'trytond.modules.%s' % MODULE,
     ],
     package_data={
-        'trytond.modules.%s' % MODULE: info.get('xml', [])
-        + info.get('translation', [])
-        + ['tryton.cfg', 'locale/*.po', 'tests/*.rst', 'reports/*.odt']
-        + ['view/*.xml'],
+        'trytond.modules.%s' % MODULE: info.get('xml', []) +
+        info.get('translation', []) +
+        ['tryton.cfg', 'locale/*.po', 'tests/*.rst', 'reports/*.odt'] +
+        ['view/*.xml'],
     },
     package_dir={
         'openlabs_report_webkit': 'openlabs_report_webkit',

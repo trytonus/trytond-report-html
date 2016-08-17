@@ -43,6 +43,9 @@ class ReportWebkit(Report):
         if not report_content:
             raise Exception('Error', 'Missing report file!')
 
+        # Make the report itself available n the report context
+        report_context['report'] = report
+
         translate = TranslateFactory(cls.__name__, Transaction().language,
                                      Translation)
         report_context['setLang'] = lambda language: translate.set_language(
