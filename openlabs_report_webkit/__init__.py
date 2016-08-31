@@ -20,11 +20,10 @@ try:
 except ImportError:
     pass
 
-from genshi.template import MarkupTemplate
 from trytond.tools import file_open
 from trytond.pool import Pool
 from trytond.transaction import Transaction
-from trytond.report import Report, TranslateFactory, Translator
+from trytond.report import Report, TranslateFactory
 from executor import execute
 
 
@@ -66,29 +65,12 @@ class ReportWebkit(Report):
 
         if output_format == "html" or Pool.test:
             return output_format, data
-        elif cls.render_method == "webkit":
+        elif cls.render_method == "webkit" and output_format == "pdf":
             return output_format, cls.wkhtml_to_pdf(data)
-        elif cls.render_method == "weasyprint":
+        elif cls.render_method == "weasyprint" and output_format == "pdf":
             return output_format, cls.weasyprint(data)
 
-    @classmethod
-    def render_template_genshi(cls, template_string, localcontext, translator):
-        """
-        Legacy genshi rendered for backward compatibility. If your report is
-        still dependent on genshi, implement the method render_template in
-        your custom report and call this method with the same arguments and
-        return the value instead.
-        """
-        report_template = MarkupTemplate(template_string)
-
-        # Since Genshi >= 0.6, Translator requires a function type
-        report_template.filters.insert(
-            0, Translator(lambda text: translator(text))
-        )
-
-        stream = report_template.generate(**localcontext)
-
-        return stream.render('xhtml').encode('utf-8')
+        return super(ReportWebkit, cls).convert(report, data)
 
     @classmethod
     def jinja_loader_func(cls, name):
