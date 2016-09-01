@@ -63,14 +63,14 @@ class ReportWebkit(Report):
         # Pool.test is True when running tests.
         output_format = report.extension or report.template_extension
 
-        if output_format == "html" or Pool.test:
+        if Pool.test:
             return output_format, data
         elif cls.render_method == "webkit" and output_format == "pdf":
             return output_format, cls.wkhtml_to_pdf(data)
         elif cls.render_method == "weasyprint" and output_format == "pdf":
             return output_format, cls.weasyprint(data)
 
-        return super(ReportWebkit, cls).convert(report, data)
+        return output_format, data
 
     @classmethod
     def jinja_loader_func(cls, name):
