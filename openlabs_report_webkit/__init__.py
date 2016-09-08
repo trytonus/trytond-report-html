@@ -12,8 +12,7 @@ import tempfile
 from functools import partial
 
 from jinja2 import Environment, FunctionLoader
-from babel.dates import format_date, format_datetime
-from babel.numbers import format_currency
+from babel import dates, numbers
 
 try:
     import weasyprint
@@ -116,15 +115,20 @@ class ReportWebkit(Report):
             with file_open(os.path.join(module, path)) as f:
                 return 'file://' + f.name
 
+        locale = Transaction().language
         return {
-            'dateformat': partial(format_date, locale=Transaction().language),
-            'datetimeformat': partial(
-                format_datetime, locale=Transaction().language
-            ),
-            'currencyformat': partial(
-                format_currency, locale=Transaction().language
-            ),
-            'modulepath': module_path
+            'dateformat': partial(dates.format_date, locale=locale),
+            'datetimeformat': partial(dates.format_datetime, locale=locale),
+            'timeformat': partial(dates.format_time, locale=locale),
+            'timedeltaformat': partial(dates.format_timedelta, locale=locale),
+
+            'numberformat': partial(numbers.format_number, locale=locale),
+            'decimalformat': partial(numbers.format_decimal, locale=locale),
+            'currencyformat': partial(numbers.format_currency, locale=locale),
+            'percentformat': partial(numbers.format_percent, locale=locale),
+            'scientificformat': partial(numbers.format_scientific, locale=locale),
+
+            'modulepath': module_path,
         }
 
     @classmethod
