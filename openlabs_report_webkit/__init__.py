@@ -139,7 +139,10 @@ class ReportWebkit(Report):
         Downstream modules can override this method to easily make changes
         to environment
         """
-        env = Environment(loader=FunctionLoader(cls.jinja_loader_func))
+        env = Environment(
+            loader=FunctionLoader(cls.jinja_loader_func),
+            extensions=['jinja2.ext.loopcontrols']
+        )
         env.filters.update(cls.get_jinja_filters())
         return env
 
