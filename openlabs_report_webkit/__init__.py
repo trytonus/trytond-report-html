@@ -11,7 +11,7 @@ import os
 import tempfile
 from functools import partial
 
-from jinja2 import Environment, FunctionLoader
+from jinja2 import Environment, FunctionLoader, select_autoescape
 from babel import dates, numbers
 
 try:
@@ -126,7 +126,9 @@ class ReportWebkit(Report):
             'decimalformat': partial(numbers.format_decimal, locale=locale),
             'currencyformat': partial(numbers.format_currency, locale=locale),
             'percentformat': partial(numbers.format_percent, locale=locale),
-            'scientificformat': partial(numbers.format_scientific, locale=locale),
+            'scientificformat': partial(
+                numbers.format_scientific, locale=locale
+            ),
 
             'modulepath': module_path,
         }
@@ -141,7 +143,8 @@ class ReportWebkit(Report):
         """
         env = Environment(
             loader=FunctionLoader(cls.jinja_loader_func),
-            extensions=['jinja2.ext.loopcontrols']
+            autoescape=select_autoescape(['html', 'xml']),
+            extensions=['jinja2.ext.loopcontrols'],
         )
         env.filters.update(cls.get_jinja_filters())
         return env

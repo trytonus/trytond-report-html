@@ -129,6 +129,33 @@ class ReportTestCase(unittest.TestCase):
             )
 
     @with_transaction()
+    def test_0025_render_escaping(self):
+        '''
+        Ensure that escaping works
+        '''
+        UserReport = POOL.get('res.user', type='report')
+        IRReport = POOL.get('ir.action.report')
+
+        self.setup_defaults()
+
+        with Transaction().set_context(company=self.company.id):
+            report_html, = IRReport.create([{
+                'name': 'HTML Report',
+                'model': 'res.user',
+                'report_name': 'res.user',
+                'report_content': buffer(
+                    "<h1>Héllø, {{data['name']}}!</h1>"
+                ),
+                'extension': 'html',
+            }])
+
+            val = UserReport.execute([USER], {'name': u'<script></script>'})
+            self.assertEqual(val[0], u'html')
+            self.assertEqual(
+                str(val[1]), '<h1>Héllø, &lt;script&gt;&lt;/script&gt;!</h1>'
+            )
+
+    @with_transaction()
     def test_0030_render_pdf(self):
         '''
         Render the report in PDF
