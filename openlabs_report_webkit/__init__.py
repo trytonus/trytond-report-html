@@ -126,7 +126,9 @@ class ReportWebkit(Report):
             'decimalformat': partial(numbers.format_decimal, locale=locale),
             'currencyformat': partial(numbers.format_currency, locale=locale),
             'percentformat': partial(numbers.format_percent, locale=locale),
-            'scientificformat': partial(numbers.format_scientific, locale=locale),
+            'scientificformat': partial(
+                numbers.format_scientific, locale=locale
+            ),
 
             'modulepath': module_path,
         }
